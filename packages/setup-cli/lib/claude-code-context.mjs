@@ -33,7 +33,8 @@ export function claudeCodeModelId(modelId) {
 
 export function applyClaudeCodeContextPolicy(env, mapping) {
   const next = { ...env };
-  if (needsClaudeCode1mContext(mapping.main)) {
+  const needs1m = Object.values(mapping).some(needsClaudeCode1mContext);
+  if (needs1m) {
     delete next.CLAUDE_CODE_DISABLE_1M_CONTEXT;
   } else {
     next.CLAUDE_CODE_DISABLE_1M_CONTEXT = "1";
