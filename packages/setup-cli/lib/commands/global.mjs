@@ -154,6 +154,8 @@ export async function runUpgradeCommand() {
     console.log("Nothing to upgrade: FireConnect was not installed via the curl installer.");
     console.log("Re-run the installer to get the latest version:");
     console.log("  curl -fsSL https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.sh | bash");
+    console.log("  # or on Windows:");
+    console.log("  irm https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.ps1 | iex");
     return;
   }
 

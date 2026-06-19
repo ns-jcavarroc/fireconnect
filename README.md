@@ -16,11 +16,24 @@ Or with `bash` directly:
 curl -fsSL https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.sh | bash
 ```
 
+**Windows (PowerShell):**
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+irm https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.ps1 | iex
+```
+
+Or save and run the script:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
 Install the `fireconnect` CLI once, then use it to manage Fireworks routing for Claude Code and OpenCode. Run `fireconnect help` to see what it can do.
 
 ## Quick Setup
 
-Run this from a terminal:
+**macOS / Linux:**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.sh | bash
@@ -32,21 +45,45 @@ For non-interactive setup:
 curl -fsSL https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.sh | FIREWORKS_API_KEY="fw_..." bash
 ```
 
+**Windows (PowerShell):**
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+irm https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.ps1 | iex
+```
+
+For non-interactive setup:
+
+```powershell
+$env:FIREWORKS_API_KEY="fw_..."
+irm https://raw.githubusercontent.com/fw-ai/fireconnect/main/install.ps1 | iex
+```
+
 Fire Pass users can use a `fpk_...` key directly — FireConnect detects the key type and
 uses the correct defaults for Fire Pass (kimi-k2p7-code-fast for all aliases).
 
 If you prefer installing from an SSH checkout:
 
+**macOS / Linux:**
+
 ```bash
 mkdir -p ~/.fireconnect && git clone git@github.com:fw-ai/fireconnect.git ~/.fireconnect && bash ~/.fireconnect/install.sh
 ```
 
+**Windows:**
+
+```powershell
+$installDir = Join-Path $HOME '.fireconnect'
+git clone git@github.com:fw-ai/fireconnect.git $installDir
+powershell -ExecutionPolicy Bypass -File (Join-Path $installDir 'install.ps1')
+```
+
 The installer:
 
-- Uses Node.js to update Claude Code settings. If Node.js is missing, asks before installing it with Homebrew or apt. It does not install or update npm packages.
+- Uses Node.js to update Claude Code settings. If Node.js is missing, asks before installing it with Homebrew or apt on macOS/Linux, or winget on Windows. It does not install or update npm packages.
 - Points you to the Fireworks API key page and prompts once for your Fireworks API key.
 - Applies the default model mapping and writes Claude Code settings.
-- Installs the `fireconnect` CLI launcher to `~/.local/bin` and adds it to your shell `PATH`.
+- Installs the `fireconnect` CLI launcher to `~/.local/bin` and adds it to your shell `PATH` (or your Windows user `PATH` on PowerShell).
 
 Then fully restart Claude Code and test with:
 
