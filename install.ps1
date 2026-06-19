@@ -135,9 +135,7 @@ function Ensure-DurableSource {
 }
 
 function Read-ApiKey {
-  param([ref]$ApiKeyOut)
-
-  if ($env:FIREWORKS_API_KEY) { $ApiKeyOut.Value = $env:FIREWORKS_API_KEY; return }
+  if ($env:FIREWORKS_API_KEY) { return $env:FIREWORKS_API_KEY }
 
   Write-Host 'Create a Fireworks API key here:'
   Write-Host 'https://app.fireworks.ai/settings/users/api-keys'
@@ -154,7 +152,7 @@ function Read-ApiKey {
     Write-Error 'Fireworks API key is required. Set $env:FIREWORKS_API_KEY and rerun the installer.'
     exit 1
   }
-  $ApiKeyOut.Value = $plain
+  return $plain
 }
 
 function Add-BinDirToPath {
@@ -192,8 +190,7 @@ function Main {
   Ensure-NodeRuntime
   Ensure-DurableSource
 
-  $apiKey = ''
-  Read-ApiKey -ApiKeyOut ([ref]$apiKey)
+  $apiKey = Read-ApiKey
 
   Invoke-NativeCommand -Exe 'node' `
     -Arguments $Cli,'claude','on','--api-key',$apiKey,'--base-url',$BaseUrl `
