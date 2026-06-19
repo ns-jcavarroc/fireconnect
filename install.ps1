@@ -28,6 +28,12 @@ $BaseUrl       = if ($env:FIREWORKS_BASE_URL) { $env:FIREWORKS_BASE_URL } else {
 $DefaultSource = 'https://github.com/fw-ai/fireconnect.git'
 $Source        = if ($env:FIRECONNECT_SOURCE) { $env:FIRECONNECT_SOURCE } else { $DefaultSource }
 
+# The CLI reads process.env.HOME directly, which is unset on Windows (Windows
+# uses USERPROFILE). $HOME in PowerShell is already USERPROFILE; export it as
+# HOME so node child processes can resolve settings (~/.claude, ~/.fireconnect).
+# Respect an existing HOME (e.g. a Git Bash environment) if present.
+if (-not $env:HOME) { $env:HOME = $HOME }
+
 # When streamed via `irm | iex`, $PSScriptRoot is empty and there is no local
 # CLI to point at; bootstrap from a git clone instead.
 if ($PSScriptRoot) {
@@ -174,7 +180,9 @@ function Install-CliLauncher {
 
   # A .cmd shim works from both PowerShell and cmd.exe; it just forwards %*
   # to node. No execution-policy concerns, unlike a .ps1 shim.
-  $shim = "@echo off`r`nnode `"$CliPath`" %*`r`n"
+  # Set HOME=USERPROFILE (if unset) so the CLI can resolve settings in a fresh
+  # shell where HOME is otherwise empty on Windows.
+  $shim = "@echo off`r`nif `"%HOME%`"==`"`" set `"HOME=%USERPROFILE%`"`r`nnode `"$CliPath`" %*`r`n"
   Set-Content -LiteralPath $launcherPath -Value $shim -Encoding ascii
 
   Add-BinDirToPath -BinDir $binDir
